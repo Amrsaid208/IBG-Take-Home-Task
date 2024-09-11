@@ -86,7 +86,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '/app/styles/variables';
+@import '../styles/variables';
 
 .review-card {
     background-color: #fff;
@@ -133,11 +133,14 @@ export default {
 }
 
 .author-name {
-    color: $dark-blue;
-    font-size: 14px;
-    font-weight: 500;
-    text-align: center;
-    text-transform: capitalize;
+    h3 {
+        color: $dark-blue;
+        font-size: 14px;
+        font-weight: 500;
+        text-align: center;
+        text-transform: capitalize;
+    }
+
 }
 
 .rating {

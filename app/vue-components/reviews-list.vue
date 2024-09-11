@@ -82,14 +82,10 @@ export default {
 </script>
 
 <style scoped></style>
-
-
 <style lang="scss" scoped>
 .reviews-list {
-    width: 634px;
-    padding: 16px;
-    margin-top: 100px;
-    max-height: 70vh;
+    width: 100%;
+    max-height: 100%;
     overflow-y: auto;
 
     ul {
@@ -125,11 +121,15 @@ export default {
 
         .no-reviews-icon {
             margin-bottom: 16px;
-
-            img {
-                width: 50px;
-                height: 50px;
-            }
+            width: 100px;
+            height: 100px;
+            box-shadow: 0px 0px 4px 2px #0000001A;
+            margin-bottom: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+           
         }
 
         .no-reviews-message {
@@ -156,12 +156,16 @@ export default {
         color: #333;
 
         .error-icon {
+            width: 100px;
+            height: 100px;
+            box-shadow: 0px 0px 4px 2px #0000001A;
             margin-bottom: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
 
-            img {
-                width: 50px;
-                height: 50px;
-            }
+            
         }
 
         .error-message {

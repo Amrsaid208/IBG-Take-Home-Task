@@ -13,9 +13,8 @@
     </div>
 
     <div class="content">
-      <div class="overall-rating">
-        <h2>Overall Rating</h2>
-
+      <div class="rating">
+        <OverallRating :reviews="reviews" />
       </div>
 
       <div class="reviews-list-container">
@@ -28,12 +27,14 @@
 
 <script>
 import ReviewList from './reviews-list.vue';
+import OverallRating from './overall-rating.vue';
 import axios from 'axios';
 
 export default {
   name: "HelloWorldComponent",
   components: {
-    ReviewList
+    ReviewList,
+    OverallRating
   },
   data() {
     return {
@@ -76,8 +77,9 @@ export default {
 
 <style scoped>
 .main-container {
-  width: 100%;
-  padding: 20px;
+  width: 1440px;
+  padding: 66px 68px 0;
+  margin: 0 auto;
 }
 
 .header {
@@ -104,77 +106,19 @@ export default {
 
 .content {
   display: flex;
+  justify-content: space-evenly;
+  height: 80vh;
+  margin-top: 40px;
+
 }
 
-.overall-rating {
-  width: 40%;
-  padding: 20px;
-  border: 1px solid #e0e0e0;
+.rating {
+  width: 44.5%;
   border-radius: 10px;
 }
 
-.rating-number {
+.reviews-list-container{
+  width: 49.5%;
   display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.rating-value {
-  font-size: 2rem;
-  font-weight: bold;
-  margin-right: 10px;
-}
-
-.stars {
-  color: #fbc02d;
-  margin-right: 10px;
-}
-
-.reviews-count {
-  color: #777;
-}
-
-.rating-bars {
-  margin-top: 20px;
-}
-
-.rating-row {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.bar {
-  flex-grow: 1;
-  height: 10px;
-  background-color: #e0e0e0;
-  margin: 0 10px;
-  border-radius: 5px;
-  position: relative;
-}
-
-.fill {
-  height: 100%;
-  border-radius: 5px;
-}
-
-.rating-overtime-button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  font-size: 16px;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-top: 20px;
-}
-
-.rating-overtime-button:hover {
-  background-color: #0056b3;
-}
-
-.reviews-list-container {
-  width: 55%;
-  margin-left: 5%;
 }
 </style>
