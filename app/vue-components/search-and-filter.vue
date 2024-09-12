@@ -4,12 +4,12 @@
             placeholder="Search by user name or description" />
         <div class="custom-select-wrapper">
             <select v-model="selectedRating" @change="applyFilters" class="custom-select">
-                <option value="all">All Ratings</option>
-                <option value="5">Excellent</option>
-                <option value="4">Good</option>
-                <option value="3">Fair</option>
-                <option value="2">Poor</option>
-                <option value="1">Unacceptable</option>
+                <option label="All Ratings" value="all">All Ratings</option>
+                <option label="Excellent" value="5">Excellent</option>
+                <option label="Good" value="4">Good</option>
+                <option label="Fair" value="3">Fair</option>
+                <option label="Poor" value="2">Poor</option>
+                <option label="Unacceptable" value="1">Unacceptable</option>
             </select>
             <!-- Custom dropdown arrow -->
             <span class="custom-arrow"></span>
