@@ -65,6 +65,10 @@ export default {
         hasNextPage:{
             type:Boolean,
             default:true
+        },
+        isFiltered:{
+            type:Boolean,
+            default:false
         }
     },
     methods: {
@@ -73,7 +77,7 @@ export default {
             const bottomOfElement =
                 element.scrollTop + element.clientHeight >= element.scrollHeight - 10;
 
-            if (bottomOfElement && this.hasNextPage) {
+            if (bottomOfElement && this.hasNextPage && !this.isFiltered) {
                 this.$emit('scrollToEnd');
             }
         }
