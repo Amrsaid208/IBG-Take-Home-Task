@@ -21,8 +21,8 @@
         </div>
         <div class="rating">
             <span v-for="(star, index) in 5" :key="index" class="star">
-                <img width="16" height="16" v-if="index < review.rating" src="../assets/filled-star.svg" alt="author-avatar" />
-                <img width="16" height="16" v-else src="../assets/unfill-star.svg" alt="unfilled star" />
+                <img class="star" width="16" height="16" v-if="index < review.rating" src="../assets/filled-star.svg" alt="author-avatar" />
+                <img class="star" width="16" height="16" v-else src="../assets/unfill-star.svg" alt="unfilled star" />
             </span>
         </div>
         <p class="review-content">{{ review.content }}</p>

@@ -48,9 +48,10 @@ export default {
       this.loading = true;
       this.error = false;
       try {
-        const response = await axios.get(
-          `https://frontend-task.instabug-dev.com/api/web/reviews?page=${this.currentPage}`
-        );
+        // const response = await axios.get(
+        //   `https://frontend-task.instabug-dev.com/api/web/reviews?page=${this.currentPage}`
+        // );
+        const response = await axios.get(`/reviews.json?page=${this.currentPage}`);
         const { reviews, has_next } = response.data;
         this.reviews = [...this.reviews, ...reviews];
         this.filteredReviews = this.reviews

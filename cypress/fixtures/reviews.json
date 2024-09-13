@@ -1,1 +1,45 @@
-{}
+{
+    "reviews": [
+      {
+        "product_id": "autumnal-knitwear",
+        "user_id": "dante-lancaster",
+        "rating": 4,
+        "content": "A bit pricey, but the quality justifies the cost. Very comfortable.",
+        "created_at": "2024-04-22",
+        "user_avatar": null
+      },
+      {
+        "product_id": "autumnal-knitwear",
+        "user_id": "jacques-griffith",
+        "rating": 5,
+        "content": "Excellent warmth and comfort, ideal for chilly autumn evenings.",
+        "created_at": "2024-02-14",
+        "user_avatar": "https://vaqybtnqyonvlwtskzmv.supabase.co/storage/v1/object/public/e-commerce-track-images/user-avatars/staci-foreman.jpg"
+      },
+      {
+        "product_id": "autumnal-knitwear",
+        "user_id": "keith-mcneil",
+        "rating": 4,
+        "content": "The texture and color of this knitwear make it a standout piece in my wardrobe.",
+        "created_at": "2024-03-15",
+        "user_avatar": "https://vaqybtnqyonvlwtskzmv.supabase.co/storage/v1/object/public/e-commerce-track-images/user-avatars/janette-mckinney.jpg"
+      },
+      {
+        "product_id": "autumnal-knitwear",
+        "user_id": "linda-reese",
+        "rating": 3,
+        "content": "Good quality but found it a bit heavy for regular wear.",
+        "created_at": "2024-01-10",
+        "user_avatar": "https://vaqybtnqyonvlwtskzmv.supabase.co/storage/v1/object/public/e-commerce-track-images/user-avatars/linda-reese.jpg"
+      },
+      {
+        "product_id": "autumnal-knitwear",
+        "user_id": "michael-clay",
+        "rating": 5,
+        "content": "Absolutely love it! Worth every penny. Very soft and warm.",
+        "created_at": "2024-05-01",
+        "user_avatar": "https://vaqybtnqyonvlwtskzmv.supabase.co/storage/v1/object/public/e-commerce-track-images/user-avatars/michael-clay.jpg"
+      }
+    ]
+  }
+  
