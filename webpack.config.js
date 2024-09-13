@@ -27,11 +27,11 @@ module.exports = {
       outputReport: true,
     }),
     new VueLoaderPlugin(),
-    new BundleAnalyzerPlugin({
-      analyzerMode: 'static', // Generates a report.html file
-      openAnalyzer: true, // Automatically opens the report after build
-      reportFilename: 'bundle-report.html', // Customize report file name
-    }),
+    // new BundleAnalyzerPlugin({
+    //   // analyzerMode: 'static', // Generates a report.html file
+    //   // openAnalyzer: true, // Automatically opens the report after build
+    //   // reportFilename: 'bundle-report.html', // Customize report file name
+    // }),
   ],
   devServer: {
     static: './dist',

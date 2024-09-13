@@ -141,7 +141,7 @@ export default {
   }
 
   .reviews-count {
-    color: #777777;
+    color: #555555;
     font-size: 14px;
     font-weight: 400;
     line-height: 18px;
