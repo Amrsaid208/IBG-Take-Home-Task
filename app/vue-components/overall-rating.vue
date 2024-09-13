@@ -172,7 +172,8 @@ export default {
       font-weight: 500;
       line-height: 18px;
       text-align: left;
-      color: #777777;
+      // color: #777777;
+      color:#555555;
       flex: 1;
     }
   }
