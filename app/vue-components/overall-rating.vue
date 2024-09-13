@@ -4,10 +4,9 @@
     <div class="rating-header">
       <span class="rating-number">{{ averageRating }}</span>
       <div class="stars">
-        <span v-for="n in 5" class="star">
-          <img v-if="n < averageRating" src="../assets/filled-star.svg" alt="filled-star">
+        <span v-for="n in 5" :key="n" class="star">
+          <img v-if="n <= Math.round(averageRating)" src="../assets/filled-star.svg" alt="filled-star">
           <img v-else src="../assets/unfill-star.svg" alt="unfilled-star">
-
         </span>
       </div>
 
@@ -25,32 +24,52 @@
         </div>
       </div>
     </div>
+
     <div class="btn">
-      <button class="rating-overtime-button">Rating overtime</button>
+      <button class="rating-overtime-button" @click="showChart = !showChart">
+        {{ showChart ? 'Hide Rating Overtime' : 'Show Rating Overtime' }}
+      </button>
+    </div>
+
+    <!-- Modal overlay -->
+    <div v-if="showChart" class="modal-overlay" @click="showChart = false"></div>
+
+    <!-- Conditionally display the chart when showChart is true -->
+    <div v-if="showChart" class="chart-modal">
+      <div class="chart-content">
+        <PerformanceChartComponent />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import PerformanceChartComponent from './reviews-overtime-chart.vue'; // Import the chart component
+
 export default {
   name: "OverallRating",
+  components: {
+    PerformanceChartComponent // Register the chart component
+  },
   props: {
     reviews: {
       type: Array,
       required: true,
     },
   },
+  data() {
+    return {
+      showChart: false, // Flag to control chart visibility
+    };
+  },
   computed: {
-    // Calculate the total number of reviews
     totalReviews() {
       return this.reviews.length;
     },
-    // Calculate the average rating
     averageRating() {
       const totalStars = this.reviews.reduce((sum, review) => sum + review.rating, 0);
       return ((totalStars / this.totalReviews) || 0).toFixed(1);
     },
-    // Generate the percentage of each rating category
     ratingCategories() {
       const ratingCounts = { excellent: 0, good: 0, fair: 0, poor: 0, unacceptable: 0 };
 
@@ -61,25 +80,21 @@ export default {
         else if (review.rating === 2) ratingCounts.poor++;
         else ratingCounts.unacceptable++;
       });
-      if (this.totalReviews) {
 
-      }
       let rawPercentages = [
         (ratingCounts.excellent / this.totalReviews || 0) * 100,
         (ratingCounts.good / this.totalReviews || 0) * 100,
         (ratingCounts.fair / this.totalReviews || 0) * 100,
         (ratingCounts.poor / this.totalReviews || 0) * 100,
-        (ratingCounts.unacceptable / this.totalReviews || 0) * 100
+        (ratingCounts.unacceptable / this.totalReviews || 0) * 100,
       ];
 
-      // Round the raw percentages and calculate the total
       let roundedPercentages = rawPercentages.map(Math.round);
       let totalPercentage = roundedPercentages.reduce((acc, val) => acc + val, 0);
 
-      // Adjust the largest or smallest value to make the sum equal to 100
       const diff = 100 - totalPercentage;
       if (diff !== 0 && diff != 100) {
-        const indexToAdjust = rawPercentages.indexOf(Math.max(...rawPercentages)); // Adjust the largest percentage
+        const indexToAdjust = rawPercentages.indexOf(Math.max(...rawPercentages));
         roundedPercentages[indexToAdjust] += diff;
       }
 
@@ -90,9 +105,8 @@ export default {
         { label: 'Poor', percentage: roundedPercentages[3], class: 'poor' },
         { label: 'Unacceptable', percentage: roundedPercentages[4], class: 'unacceptable' },
       ];
-    }
+    },
   },
-
 };
 </script>
 
@@ -102,15 +116,6 @@ export default {
 .overall-rating {
   border-radius: 10px;
   width: 100%;
-
-  h2 {
-    font-size: 32px;
-    font-weight: 500;
-    line-height: 48px;
-    text-align: left;
-    color: $dark-blue;
-    margin: 0 0 16px;
-  }
 }
 
 .rating-header {
@@ -124,7 +129,6 @@ export default {
     line-height: 18px;
     text-align: left;
     color: #000;
-
   }
 
   .stars {
@@ -137,24 +141,16 @@ export default {
   }
 
   .reviews-count {
-    color: #555555; 
+    color: #777777;
     font-size: 14px;
     font-weight: 400;
     line-height: 18px;
     text-align: left;
-
   }
-
 }
-
-
-
-
-
 
 .rating-bars {
   margin-top: 56px;
-
 
   .rating-row {
     display: flex;
@@ -176,12 +172,9 @@ export default {
       font-weight: 500;
       line-height: 18px;
       text-align: left;
-      // color: #777777;
-      color: #555555;
+      color: #777777;
       flex: 1;
     }
-
-
   }
 
   .row-stats {
@@ -200,7 +193,6 @@ export default {
     position: relative;
     width: 82%;
   }
-
 
   .fill {
     height: 100%;
@@ -243,5 +235,55 @@ export default {
     cursor: pointer;
     margin-top: 20px;
   }
+}
+
+/* Modal and Chart Styling */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  z-index: 999; /* Above everything else */
+}
+
+.chart-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000; /* Above overlay */
+  height: 668px;
+  width: 943px;
+  padding: 51px 82px 38px;
+}
+
+.chart-content {
+  position: relative;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: #888;
+}
+
+.close-button:hover {
+  color: #555;
+}
+
+.chart-container {
+  margin-top: 30px;
+  height: 300px;
 }
 </style>
