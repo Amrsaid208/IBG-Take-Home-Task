@@ -4,7 +4,7 @@
             <div class="user-info">
                 <div class="avatar">
                     <template v-if="review.user_avatar">
-                        <img :src="review.user_avatar" alt="author-avatar" />
+                        <img loading="lazy" :src="review.user_avatar" alt="author-avatar" />
                     </template>
                     <template v-else>
                         <div class="initials"
@@ -75,13 +75,31 @@ export default {
         },
         getTextColorForBg(bgColor) {
             const color = bgColor.replace(/^rgba?\(|\s+|\)$/g, '').split(',');
-            const r = parseInt(color[0]);
-            const g = parseInt(color[1]);
-            const b = parseInt(color[2]);
-            const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
-            return luminance > 186 ? '#000000' : '#FFFFFF';
+            let r = parseInt(color[0]) / 255;
+            let g = parseInt(color[1]) / 255;
+            let b = parseInt(color[2]) / 255;
+
+            // Apply gamma correction (sRGB space)
+            r = (r <= 0.03928) ? r / 12.92 : Math.pow((r + 0.055) / 1.055, 2.4);
+            g = (g <= 0.03928) ? g / 12.92 : Math.pow((g + 0.055) / 1.055, 2.4);
+            b = (b <= 0.03928) ? b / 12.92 : Math.pow((b + 0.055) / 1.055, 2.4);
+
+            // Calculate relative luminance
+            const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+
+            // Define white and black luminance for comparison
+            const whiteLuminance = 1;
+            const blackLuminance = 0;
+
+            // Calculate contrast ratio with black and white
+            const contrastWithWhite = (whiteLuminance + 0.05) / (luminance + 0.05);
+            const contrastWithBlack = (luminance + 0.05) / (blackLuminance + 0.05);
+
+            // Return the color that provides the best contrast
+            return contrastWithWhite >= contrastWithBlack ? '#FFFFFF' : '#000000';
         }
-    },
+    }
+
 };
 </script>
 

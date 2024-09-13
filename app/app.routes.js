@@ -1,10 +1,10 @@
 angular.module('appModule')
-  .config(($locationProvider) => {
+  .config(['$locationProvider', function ($locationProvider) {
     $locationProvider.html5Mode({
       enabled: true,
     });
-  })
-  .config(($stateProvider, $urlRouterProvider) => {
+  }])
+  .config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
     $stateProvider
       .state({
         name: 'reviews',
@@ -20,4 +20,4 @@ angular.module('appModule')
       });
 
     $urlRouterProvider.otherwise('/not-found');
-  });
+  }]);
