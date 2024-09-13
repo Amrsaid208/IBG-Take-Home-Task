@@ -4,7 +4,7 @@
             <div class="user-info">
                 <div class="avatar">
                     <template v-if="review.user_avatar">
-                        <img loading="lazy" :src="review.user_avatar" alt="author-avatar" />
+                        <img width="36"  height="54"loading="lazy" :src="review.user_avatar" alt="author-avatar" />
                     </template>
                     <template v-else>
                         <div class="initials"
@@ -21,8 +21,8 @@
         </div>
         <div class="rating">
             <span v-for="(star, index) in 5" :key="index" class="star">
-                <img v-if="index < review.rating" src="../assets/filled-star.svg" alt="author-avatar" />
-                <img v-else src="../assets/unfill-star.svg" alt="unfilled star" />
+                <img width="16" height="16" v-if="index < review.rating" src="../assets/filled-star.svg" alt="author-avatar" />
+                <img width="16" height="16" v-else src="../assets/unfill-star.svg" alt="unfilled star" />
             </span>
         </div>
         <p class="review-content">{{ review.content }}</p>

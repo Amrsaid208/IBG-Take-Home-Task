@@ -5,8 +5,8 @@
       <span class="rating-number">{{ averageRating }}</span>
       <div class="stars">
         <span v-for="n in 5" :key="n" class="star">
-          <img v-if="n <= Math.round(averageRating)" src="../assets/filled-star.svg" alt="filled-star">
-          <img v-else src="../assets/unfill-star.svg" alt="unfilled-star">
+          <img width="16" height="16" v-if="n <= Math.round(averageRating)" src="../assets/filled-star.svg" alt="filled-star">
+          <img width="16" height="16" v-else src="../assets/unfill-star.svg" alt="unfilled-star">
         </span>
       </div>
 
@@ -172,7 +172,8 @@ export default {
       font-weight: 500;
       line-height: 18px;
       text-align: left;
-      color: #777777;
+      // color: #777777;
+      color:#555555;
       flex: 1;
     }
   }
