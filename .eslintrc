@@ -1,7 +1,7 @@
 {
   "extends": "airbnb-base/legacy",
   "parserOptions": {
-    "ecmaVersion": 6,
+    "ecmaVersion": 2021,
     "sourceType": "module"
   },
   "rules": {
@@ -40,5 +40,6 @@
     "browser": true,
     "node": true,
     "jasmine": true
-  }
+  },
+  
 }
