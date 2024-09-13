@@ -1,6 +1,26 @@
 <template>
   <div class="c-chart__container">
-    <v-chart ref="chart" :option="chartOptions" />
+    <!-- Date Range Inputs -->
+    <div class="date-picker">
+      <input type="date" id="start-date" v-model="startDate" @change="filterChartData" />
+      <input type="date" id="end-date" v-model="endDate" @change="filterChartData" />
+    </div>
+
+    <!-- Loading Message -->
+    <div v-if="loading" class="loading-message">
+      Loading chart data...
+    </div>
+
+    <!-- No Data Found -->
+    <div v-if="!loading && filteredData.length === 0" class="no-data-found">
+      <p>No data available for the selected date range.</p>
+    </div>
+
+    <!-- Chart -->
+    <v-chart   v-if="filteredData.length > 0 && !loading" ref="chart" :option="chartOptions" />
+
+    <!-- Error Message -->
+    <div v-if="error" class="error-message">Failed to load chart data.</div>
   </div>
 </template>
 
@@ -28,54 +48,21 @@ use([
 
 export default {
   name: "PerformanceChartComponent",
-
   components: {
     VChart,
   },
-
   data() {
     return {
-      chartData: [
-        {
-          date_ms: 1641772800000,
-          value: 4.2,
-        },
-        {
-          date_ms: 1641859200000,
-          value: 3.33,
-        },
-        {
-          date_ms: 1641945600000,
-          value: 3.93,
-        },
-        {
-          date_ms: 1642032000000,
-          value: 4.31,
-        },
-        {
-          date_ms: 1642118400000,
-          value: 5,
-        },
-        {
-          date_ms: 1642204800000,
-          value: 2.88,
-        },
-        {
-          date_ms: 1642291200000,
-          value: 3.7,
-        },
-      ],
+      chartData: [], // Chart data fetched from the API
+      filteredData: [], // Filtered chart data based on date range
+      loading: true, // Loading state
+      error: false, // Error state
+      startDate: "", // Start date for filtering
+      endDate: "", // End date for filtering
     };
   },
 
   computed: {
-    initOptions() {
-      return {
-        width: "auto",
-        height: "300px",
-      };
-    },
-
     chartOptions() {
       return {
         title: {
@@ -132,7 +119,7 @@ export default {
           left: "right",
           top: "top",
           min: 0,
-          max: 100,
+          max: 5,
           pieces: [
             {
               gte: 0,
@@ -165,11 +152,11 @@ export default {
     },
 
     xAxisData() {
-      return this.chartData.map((item) => this.formatDate(item.date_ms));
+      return this.filteredData.map((item) => this.formatDate(item.date_ms));
     },
 
     yAxisData() {
-      return this.chartData.map((item) => item.value);
+      return this.filteredData.map((item) => item.value);
     },
   },
 
@@ -177,6 +164,87 @@ export default {
     formatDate(dateInMs) {
       return moment(dateInMs).format("DD MMM YYYY");
     },
+
+    async fetchChartData() {
+      try {
+        const response = await fetch("https://frontend-task.instabug-dev.com/api/web/reviews_overall");
+        const data = await response.json();
+        this.chartData = data.data;
+        this.filteredData = this.chartData; // Initially, the filtered data is the same as the full dataset
+        this.loading = false;
+      } catch (error) {
+        this.loading = false;
+        this.error = true;
+        console.error("Failed to fetch chart data:", error);
+      }
+    },
+
+    filterChartData() {
+      if (this.startDate && this.endDate) {
+        // Filter data based on the selected date range
+        const start = new Date(this.startDate).getTime();
+        const end = new Date(this.endDate).getTime();
+
+        this.filteredData = this.chartData.filter(item => {
+          const date = item.date_ms;
+          return date >= start && date <= end;
+        });
+      } else {
+        // If no date range is selected, show the full dataset
+        this.filteredData = this.chartData;
+      }
+    }
+  },
+
+  mounted() {
+    this.fetchChartData(); // Fetch data when the component is mounted
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.c-chart__container {
+  
+  width: 100%;
+  height: 480px;
+  
+}
+.date-picker {
+  margin:0 auto 63px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid gray;
+  height: 36px;
+  width: 50%;
+  input{
+    border: 0;
+  }
+}
+
+.date-picker label {
+  margin-right: 10px;
+}
+
+.date-picker input {
+  margin: 0 10px;
+}
+
+.loading-message {
+  text-align: center;
+  font-size: 16px;
+  color: #888;
+}
+
+.no-data-found {
+  text-align: center;
+  font-size: 18px;
+  color: #777;
+}
+
+.error-message {
+  text-align: center;
+  font-size: 16px;
+  color: red;
+}
+</style>
