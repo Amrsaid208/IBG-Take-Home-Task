@@ -1,25 +1,18 @@
 <template>
   <div class="main-container">
     <div class="header">
-      <input type="text" class="search-input" placeholder="Search by user name or description" />
-      <select class="rating-filter">
-        <option>All Ratings</option>
-        <option>5 Stars</option>
-        <option>4 Stars</option>
-        <option>3 Stars</option>
-        <option>2 Stars</option>
-        <option>1 Star</option>
-      </select>
+      <SearchAndFilter @filterReviews="filterReviews" />
     </div>
 
     <div class="content">
       <div class="rating">
-        <OverallRating :reviews="reviews" />
+        <OverallRating :reviews="filteredReviews" />
       </div>
 
       <div class="reviews-list-container">
-        <ReviewList :reviews="reviews" :loading="loading" :error="error" :currentPage="currentPage" :hasNextPage="hasNextPage"
-          @scrollToEnd="fetchReviews" @reloadReviews="fetchReviews" />
+        <ReviewList :reviews="filteredReviews" :loading="loading" :error="error" :currentPage="currentPage"
+          :hasNextPage="hasNextPage" :isFiltered="isFiltered" @scrollToEnd="fetchReviews"
+          @reloadReviews="fetchReviews" />
       </div>
     </div>
   </div>
@@ -29,20 +22,24 @@
 import ReviewList from './reviews-list.vue';
 import OverallRating from './overall-rating.vue';
 import axios from 'axios';
+import SearchAndFilter from './search-and-filter.vue';
 
 export default {
   name: "HelloWorldComponent",
   components: {
     ReviewList,
-    OverallRating
+    OverallRating,
+    SearchAndFilter
   },
   data() {
     return {
       reviews: [],
+      filteredReviews: [],
       loading: false,
       error: false,
       currentPage: 1,
       hasNextPage: true,
+      isFiltered: false
     };
   },
   methods: {
@@ -56,22 +53,42 @@ export default {
         );
         const { reviews, has_next } = response.data;
         this.reviews = [...this.reviews, ...reviews];
+        this.filteredReviews = this.reviews
         this.hasNextPage = has_next;
         this.currentPage += 1;
       } catch (err) {
         this.error = true;
       } finally {
         setTimeout(() => {
-          console.log("Setting loading to false after delay");
           this.loading = false;
         }, 1000);
       }
-    }
+    },
+    filterReviews({ searchQuery, selectedRating }) {
+      if (searchQuery === '' && selectedRating === 'all') {
+        // Reset to all reviews when no filters are applied
+        this.isFiltered = false
+        this.filteredReviews = this.reviews
+    } else {
+        this.isFiltered = true;
+        this.filteredReviews = this.reviews.filter(review => {
+          const matchesSearchQuery = searchQuery === '' ||
+            (review.user_id.split("-").join(" ").toLowerCase().startsWith(searchQuery.toLowerCase()) || review.content.toLowerCase().includes(searchQuery.toLowerCase()));
 
+          // Filter by selected rating
+          const matchesRating = selectedRating === 'all' || review.rating === parseInt(selectedRating);
+
+          // Return true only if both search query and rating match
+          return matchesSearchQuery && matchesRating;
+        });
+       
+      }
+    }
   },
   mounted() {
     this.fetchReviews();
-  }
+  },
+  
 };
 </script>
 
@@ -117,7 +134,7 @@ export default {
   border-radius: 10px;
 }
 
-.reviews-list-container{
+.reviews-list-container {
   width: 49.5%;
   display: flex;
 }
