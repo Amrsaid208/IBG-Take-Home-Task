@@ -2,16 +2,22 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const TerserPlugin = require('terser-webpack-plugin');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 module.exports = {
-  mode: 'development',
+  mode: 'production', // Set mode to production for minification
   entry: {
     index: './index.js',
   },
-  devtool: 'inline-source-map',
+  performance: {
+    hints: false, // Disables the performance hints
+  }
+  ,
+  devtool: 'source-map', // Changed to 'source-map' for better debugging in production
   plugins: [
     new HtmlWebpackPlugin({
-      title: 'Development',
+      title: 'Production',
       template: 'app/index.html',
       filename: 'index.html',
     }),
@@ -21,6 +27,11 @@ module.exports = {
       outputReport: true,
     }),
     new VueLoaderPlugin(),
+    // new BundleAnalyzerPlugin({
+    //   // analyzerMode: 'static', // Generates a report.html file
+    //   // openAnalyzer: true, // Automatically opens the report after build
+    //   // reportFilename: 'bundle-report.html', // Customize report file name
+    // }),
   ],
   devServer: {
     static: './dist',
@@ -28,9 +39,47 @@ module.exports = {
     historyApiFallback: true,
   },
   output: {
-    filename: '[name].bundle.js',
+    filename: '[name].[contenthash].js', // Use contenthash for better caching
     path: path.resolve(__dirname, 'dist'),
-    clean: true,
+    clean: true, // Clean the dist folder before each build
+  },
+  optimization: {
+    minimize: false, // Enable file minimization
+     usedExports: true, // Enable tree shaking
+    sideEffects: true, 
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          compress: true,
+          mangle: true, // Reduce variable names to smaller ones
+          output: {
+            comments: false, // Remove comments from output
+          },
+        },
+        extractComments: false, // Prevent extraction of comments to a separate file
+      }),
+    ],
+    splitChunks: {
+      chunks: 'all', // Apply splitting to both async and sync chunks
+      maxInitialRequests: 10, // Maximum number of parallel requests when an entry point is loaded
+      maxAsyncRequests: 20, // Maximum number of parallel requests when on-demand loading
+      minSize: 20000, // Minimum size for splitting a chunk
+      cacheGroups: {
+        defaultVendors: {
+          test: /[\\/]node_modules[\\/]/,
+          priority: -10,
+          reuseExistingChunk: true,
+          name: 'vendors',
+        },
+        default: {
+          minChunks: 2, // Split only if used in at least 2 different chunks
+          priority: -20,
+          reuseExistingChunk: true,
+          name: 'common',
+        },
+      },
+    },
+    runtimeChunk: 'single', // Split the runtime code into a separate chunk
   },
   module: {
     rules: [
@@ -76,7 +125,7 @@ module.exports = {
           {
             loader: 'file-loader',
             options: {
-              name: 'styles/[name].css',
+              name: 'styles/[name].[contenthash].css',
             },
           },
           {
@@ -96,16 +145,13 @@ module.exports = {
           {
             loader: 'file-loader',
             options: {
-              name: '[path][name].[ext]',
+              name: 'images/[name].[contenthash].[ext]',
               outputPath: 'images',
               esModule: false,
             },
           },
         ],
       },
-      // https://vue-loader.vuejs.org/guide/pre-processors.html
-      // this will apply to both plain `.scss` files
-      // AND `<style lang="scss">` blocks in `.vue` files
       {
         test: /\.(scss|css)$/,
         include: [/vue-components|pages/],
